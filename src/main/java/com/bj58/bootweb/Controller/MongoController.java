@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Locale;
 import java.text.ParseException;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -62,45 +64,60 @@ public class MongoController {
         return "success";
     }
 
-    @RequestMapping(value = "queryAll",method = RequestMethod.GET)
+    @RequestMapping(value = "queryAll", method = RequestMethod.GET)
     @ResponseBody
     public String queryAll() {
         final StringBuilder builder = new StringBuilder();
-        long begin=new Date().getTime();
+        long begin = new Date().getTime();
 
         FindIterable<Document> iterable = db.getCollection("restaurants").find();
-        long end=new Date().getTime();
+        long end = new Date().getTime();
         System.out.println("耗时：" + (end - begin));
-        final List<Document> docs=new ArrayList<Document>();
-        final AtomicInteger  i=new AtomicInteger();
+        final List<Document> docs = new ArrayList<Document>();
+        final AtomicInteger i = new AtomicInteger();
         iterable.forEach(new Block<Document>() {
             public void apply(Document document) {
                 docs.add(document);
             }
         });
-        end=new Date().getTime();
+        end = new Date().getTime();
         System.out.println("耗时：" + (end - begin));
         System.out.println(docs.size() + ":" + i.intValue() + " : " + builder.capacity());
         return builder.toString();
     }
 
-    @RequestMapping(value="query",method = RequestMethod.GET)
+    @RequestMapping(value = "query", method = RequestMethod.GET)
     @ResponseBody
-    public String query(){
-        long begin=new Date().getTime();
+    public String query() {
+        long begin = new Date().getTime();
         FindIterable<Document> iterable;
-        iterable=db.getCollection("restaurants").find(new Document("grades.score",new Document("$gt",30))).limit(10).skip(10);
-        long end=new Date().getTime();
+        //iterable=db.getCollection("restaurants").find(new Document("grades.score",new Document("$gt",30))).limit(10).skip(10);
+
+        //与查询
+        //iterable=db.getCollection("restaurants").find(new Document("cuisine","Italian").append("address.zipcode","10075"));
+        //iterable=db.getCollection("restaurants").find(and(eq("cuisine","Italian"),eq("address.zipcode","10075")));
+
+        //或条件
+        //iterable=db.getCollection("restaurants").find(new Document("$or",asList(new Document("cuisine","Italian")
+        // ,new Document("address.zipcode", "10075"))));
+        //iterable = db.getCollection("restaurants").find(or(eq("cuisine", "Italian"), eq("address.zipcode", "10075")));
+
+        //排序
+        iterable=db.getCollection("restaurants").find(new Document("cuisine","Italian")).sort(new Document("borough",1).append("address.zipcode",1));
+        iterable=db.getCollection("restaurants").find(eq("cuisine","Italian")).sort(ascending("borough","address.zipcode"));
+        long end = new Date().getTime();
         System.out.println("耗时：" + (end - begin));
 
-        final  StringBuilder builder=new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
+        final AtomicInteger i = new AtomicInteger();
         iterable.forEach(new Block<Document>() {
             public void apply(Document document) {
                 builder.append(document.toJson());
+                i.set(i.intValue() + 1);
             }
         });
-        end=new Date().getTime();
-        System.out.println("耗时：" + (end - begin));
+        end = new Date().getTime();
+        System.out.println("耗时：" + (end - begin) + " 条数:" + i.intValue());
         return builder.toString();
     }
 
