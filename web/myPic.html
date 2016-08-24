@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>跳跃的课工厂</title>
+    <style type="text/css">
+        *{
+            margin:0;
+            padding:0;
+        }
+         .container{
+            width:600px;
+             height:600px;
+             border:1px solid gray;
+             margin: 50px auto;
+             -webkit-transform-style: preserve-3d;
+             -moz-transform-style: preserve-3d;
+             -ms-transform-style: preserve-3d;
+             transform-style: preserve-3d;
+             perspective: 1200px;
+         }
+        .ke{
+            width:300px;
+            height: 417px;
+            display: block;
+            margin: 50px auto;
+            background: url("img/ke2.jpeg") 0px 0px / 300px 437px no-repeat;
+            -webkit-box-shadow:  -7px 10px 10px #333;
+            -moz-box-shadow:  -7px 10px 10px #333;
+            box-shadow:  -7px 10px 10px #333;
+            transform: rotateX(60deg) rotateY(3deg) rotateZ(-25deg) ;
+            transition:all 1s ease-out;
+        }
+        .ke:hover{
+            transform: rotate3D(0,0,0,0deg);
+            -webkit-box-shadow:  -100px  100px 10px #fff;
+            -moz-box-shadow:   -100px  100px 10px #fff;
+            box-shadow:  -100px  100px 10px #fff;
+
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+<a href="" class="ke"></a>
+</div>
+</body>
+</html>
